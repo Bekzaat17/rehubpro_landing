@@ -1,10 +1,403 @@
-<!DOCTYPE html>
-<html lang="en">
+<!doctype html>
+<html lang="ru">
 <head>
-  <meta charset="UTF-8">
-  <title>$Title$</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>RehubPro — CRM для реабилитационных центров</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root{
+            --bg:#0f1724; --card:#0b1220; --muted:#9aa4b2; --accent:#2ECC71; --accent-2:#007BFF; --glass: rgba(255,255,255,0.03);
+            --radius:16px; --container:1200px;
+        }
+        *{box-sizing:border-box}
+        html,body{height:100%}
+        body{
+            margin:0; font-family:Inter,system-ui,-apple-system,Segoe UI, Roboto, 'Helvetica Neue', Arial;
+            background:linear-gradient(100deg,#061024 0%, #071428 100%); color:#e6eef6; -webkit-font-smoothing:antialiased;
+            -moz-osx-font-smoothing:grayscale; line-height:1.4;
+        }
+        .wrap{max-width:var(--container); margin:32px auto; padding:24px}
+
+        .pill {
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 10px;
+            padding: 6px 12px;
+            font-size: 14px;
+            font-weight: 600;
+            color: #e6eef6;
+            display: inline-block;
+        }
+        /* Header */
+        header{display:flex; align-items:center; justify-content:space-between; gap:16px}
+        .brand{display:flex; align-items:center; gap:14px}
+        .logo{width:48px; height:48px; border-radius:10px; background:linear-gradient(135deg,var(--accent),var(--accent-2)); display:flex; align-items:center; justify-content:center; font-weight:800}
+        .brand h1{margin:0; font-size:18px}
+        nav{display:flex; gap:12px; align-items:center}
+        .btn{background:var(--accent); color:#042023; padding:12px 20px; border-radius:10px; font-weight:700; border:0; cursor:pointer; transition:all 0.3s ease; text-decoration:none; display:inline-block}
+        .btn:hover{background:#27ae60; transform:translateY(-2px); box-shadow:0 8px 25px rgba(46,204,113,0.3)}
+        .btn-ghost{background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.2); padding:11px 18px; border-radius:10px; cursor:pointer; transition:all 0.3s ease; color:#e6eef6; text-decoration:none; display:inline-block}
+        .btn-ghost:hover{background:rgba(255,255,255,0.15); border-color:rgba(255,255,255,0.4); transform:translateY(-2px)}
+
+        /* Hero */
+        .hero{display:grid; grid-template-columns:1fr 540px; gap:32px; align-items:center; margin-top:32px}
+        .eyebrow{display:inline-block; background:var(--glass); padding:8px 12px; border-radius:999px; color:var(--muted); font-weight:600; font-size:13px}
+        h2{font-size:36px; margin:16px 0 12px}
+        p.lead{color:var(--muted); margin:0 0 24px}
+        .cta-row{display:flex; gap:12px}
+
+        /* Carousel */
+        .carousel-container{position:relative; overflow:hidden; border-radius:14px; background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)); border:1px solid rgba(255,255,255,0.03)}
+        .carousel{display:flex; transition:transform 0.5s ease}
+        .carousel-slide{min-width:100%; padding:24px; text-align:center}
+        .carousel-slide img{max-width:100%; height:300px; object-fit:cover; border-radius:12px; background:repeating-linear-gradient(135deg, rgba(255,255,255,0.02) 0 2px, transparent 2px 8px)}
+        .carousel-slide h4{margin:12px 0 4px; font-size:16px}
+        .carousel-slide p{color:var(--muted); font-size:13px; margin:0}
+        .carousel-nav{display:flex; justify-content:center; gap:8px; margin-top: -20px}
+        .carousel-dot{width:10px; height:10px; border-radius:50%; background:rgba(255,255,255,0.3); cursor:pointer; transition:all 0.3s ease}
+        .carousel-dot.active{background:var(--accent); transform:scale(1.2)}
+        .carousel-arrow{position:absolute; top:50%; transform:translateY(-50%); background:rgba(0,0,0,0.5); color:white; border:none; width:40px; height:40px; border-radius:50%; cursor:pointer; font-size:18px; transition:all 0.3s ease}
+        .carousel-arrow:hover{background:rgba(0,0,0,0.8)}
+        .carousel-arrow.prev{left:12px}
+        .carousel-arrow.next{right:12px}
+
+        /* Features grid */
+        .features{display:grid; grid-template-columns:repeat(3,1fr); gap:18px; margin:40px 0}
+        .feature{background:var(--card); padding:18px; border-radius:14px; border:1px solid rgba(255,255,255,0.03); transition:all 0.3s ease; cursor:pointer}
+        .feature:hover{transform:scale(1.1); background:rgba(255,255,255,0.05); border-color:rgba(255,255,255,0.1)}
+        .feature h3{margin:8px 0 6px}
+        .feature p{margin:0; color:var(--muted); font-size:14px}
+
+        /* Pricing */
+        .pricing{display:flex; gap:18px; margin:40px 0; align-items:stretch}
+        .price-card{flex:1; background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)); padding:22px; border-radius:14px; border:1px solid rgba(255,255,255,0.03)}
+        .price{font-size:28px; font-weight:800; margin:12px 0}
+        .save{color:var(--accent);font-size:20px; font-weight:700}
+
+        /* CTA band */
+        .cta-band{margin:40px 0; background:linear-gradient(90deg, rgba(46,204,113,0.08), rgba(0,123,255,0.06)); padding:20px; border-radius:12px; display:flex; justify-content:space-between; align-items:center}
+
+        footer{margin-top:40px; color:var(--muted); font-size:14px; display:flex; justify-content:space-between; align-items:center}
+
+        /* Responsive */
+        @media (max-width:980px){
+            .hero {
+                grid-template-columns: 1fr;
+                gap: 24px;
+            }
+
+            /* Карусель — адаптивная высота */
+            .carousel {
+                height: auto !important;
+            }
+
+            .carousel-slide img {
+                width: 100% !important;
+                height: auto !important;
+                object-fit: contain !important; /* Сохраняем пропорции */
+                max-height: 400px;
+            }
+            .features{grid-template-columns:repeat(2,1fr)}
+
+            .pricing{flex-direction:column}
+        }
+        @media (max-width:560px){
+            .features{grid-template-columns:1fr}
+            .logo{width:40px;height:40px}
+            .wrap {
+                padding: 16px;
+            }
+
+            h2 {
+                font-size: 24px;
+            }
+
+            /* Карусель — еще ниже */
+            .carousel-slide img {
+                max-height: 260px;
+            }
+
+            /* Перенос кнопок под картинкой */
+            .cta-row {
+                flex-direction: column;
+                width: 100%;
+            }
+
+            .btn, .btn-ghost {
+                width: 100%;
+                text-align: center;
+            }
+            header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+
+            nav a[href="#features"],
+            nav a[href="#pricing"] {
+                display: none;
+            }
+
+            .brand {
+                flex-direction: row;
+                align-items: center;
+            }
+
+            .brand h1 {
+                font-size: 18px;
+            }
+
+            .muted {
+                font-size: 12px !important;
+            }
+            .cta-band {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .cta-band > div:last-child {
+                flex-direction: column;
+                width: 100%;
+            }
+
+            .cta-band a {
+                width: 100%;
+                text-align: center;
+
+        }}
+
+            /* Social icons */
+            .social-links{display:flex; gap:12px; align-items:center}
+            .social-icon{width:32px; height:32px; border-radius:50%; background:rgba(255,255,255,0.1); display:flex; align-items:center; justify-content:center; transition:all 0.3s ease; text-decoration:none; color:#e6eef6}
+            .social-icon:hover{background:var(--accent); transform:scale(1.1)}
+            .social-icon svg{width:18px; height:18px}
+    </style>
 </head>
 <body>
-$END$
+<div class="wrap">
+    <header>
+        <div class="brand">
+            <div class="logo">RP</div>
+            <div>
+                <h1>RehubPro</h1>
+                <div class="muted" style="font-size:13px">CRM для реабилитационных центров</div>
+            </div>
+        </div>
+        <nav>
+            <a href="#features" class="btn-ghost">Возможности</a>
+            <a href="#pricing" class="btn-ghost">Тарифы</a>
+        </nav>
+    </header>
+
+    <!-- HERO -->
+    <section class="hero" style="margin-top:70px">
+        <div>
+            <span class="eyebrow">Для реабилитационных центров</span>
+            <h2>RehubPro — CRM, которая упрощает реабилитацию и повышает результат</h2>
+            <p class="lead">Ведите отчёты, отслеживайте задания и демонстрируйте реальный прогресс с помощью наглядной аналитики. Меньше бумажной работы, больше внимания клиентам.</p>
+
+            <div class="cta-row">
+                <a href="https://test.rehubpro.kz" target="_blank" class="btn">Попробовать демо</a>
+                <a href="#" class="btn-ghost" onclick="openWhatsApp('Здравствуйте, хотел(а) получить консультацию'); return false;">Запросить консультацию</a>
+            </div>
+
+            <div style="margin-top:20px; display:flex; gap:10px; flex-wrap:wrap">
+                <div class="pill">Ежедневные отчёты</div>
+                <div class="pill">Аналитика прогресса</div>
+                <div class="pill">Учёт финансов</div>
+            </div>
+        </div>
+
+        <div style="text-align:center; margin: 20px 0;">
+            <img src="main.png" alt="Главная доска RehubPro" style="max-width:100%; height:auto; border-radius:8px;">
+        </div>
+    </section>
+
+    <!-- FEATURES -->
+    <section id="features" style="padding-top:130px">
+        <div style="display:flex; justify-content:space-between; align-items:end">
+            <h2 style="margin:0">Возможности</h2>
+        </div>
+
+        <div class="features">
+            <div class="feature">
+                <h3>Главная доска резидентов</h3>
+                <p>Вся ключевая информация — на одном экране. Сразу видно задания, зависимости и текущий этап.</p>
+            </div>
+
+            <div class="feature">
+                <h3>Трекинг заданий</h3>
+                <p>История выполнения заданий хранится в системе — ни одного потерянного листа.</p>
+            </div>
+
+            <div class="feature">
+                <h3>Ежедневные отчёты</h3>
+                <p>Заполнение занимает минуты, данные сразу готовы для аналитики.</p>
+            </div>
+
+            <div class="feature">
+                <h3>Аналитика прогресса</h3>
+                <p>Красивые графики для презентаций и внутреннего контроля — видно реальные изменения.</p>
+            </div>
+
+            <div class="feature">
+                <h3>Напоминания</h3>
+                <p>Авто-напоминания для приёма лекарств и важных событий — как будильник.</p>
+            </div>
+
+            <div class="feature">
+                <h3>Хранилище и экспорт</h3>
+                <p>Централизованное хранилище файлов и экспорт отчётов в PDF / TXT.</p>
+            </div>
+        </div>
+
+        <!-- Modern carousel -->
+        <div class="carousel-container" style="margin-top:18px">
+            <button class="carousel-arrow prev" onclick="prevSlide()">❮</button>
+            <div class="carousel" id="carousel" style="height:660px;">
+                <div class="carousel-slide">
+                    <img src="1.png" alt="Слайд 1" style="width:90%;height:90%;object-fit:cover;border-radius:12px;">
+                </div>
+                <div class="carousel-slide">
+                    <img src="2.png" alt="Слайд 2" style="width:90%;height:90%;object-fit:cover;border-radius:12px;">
+                </div>
+                <div class="carousel-slide">
+                    <img src="3.png" alt="Слайд 3" style="width:90%;height:90%;object-fit:cover;border-radius:12px;">
+                </div>
+                <div class="carousel-slide">
+                    <img src="4.png" alt="Слайд 4" style="width:90%;height:90%;object-fit:cover;border-radius:12px;">
+                </div>
+            </div>
+            <button class="carousel-arrow next" onclick="nextSlide()">❯</button>
+        </div>
+    </section>
+
+    <!-- Pricing -->
+    <section id="pricing" style="margin-top:130px">
+        <h2 style="margin-bottom:12px">Тарифы</h2>
+        <p class="muted">Выбирайте удобный план — чем дольше подписка, тем больше выгода.</p>
+
+        <div class="pricing">
+            <div class="price-card">
+                <div class="muted">1 месяц</div>
+                <div class="price">50 000 ₸</div>
+                <p class="muted">Подходит для коротких проектов и тестирования.</p>
+            </div>
+
+            <div class="price-card">
+                <div class="muted">3 месяца</div>
+                <div class="price">140 000 ₸ <span class="save">(экономия 10 000 ₸)</span></div>
+                <p class="muted">Оптимально для пилота центра — быстрая окупаемость.</p>
+            </div>
+
+            <div class="price-card">
+                <div class="muted">6 месяцев</div>
+                <div class="price">260 000 ₸ <span class="save">(экономия 40 000 ₸)</span></div>
+                <p class="muted">Лучший баланс цены и стабильности работы.</p>
+            </div>
+
+            <div class="price-card">
+                <div class="muted">12 месяцев</div>
+                <div class="price">500 000 ₸ <span class="save">(экономия 100 000 ₸)</span></div>
+                <p class="muted">Максимальная выгода и приоритетная поддержка.</p>
+            </div>
+        </div>
+
+        <div style="margin-top:12px; color:var(--muted)"><strong>Настройка и внедрение:</strong> оплачивается отдельно — <strong>от 50 000 ₸</strong> (или по запросу, в зависимости от требований).</div>
+
+    </section>
+
+    <!-- CTA band -->
+    <section class="cta-band">
+        <div>
+            <div style="font-weight:800; font-size:18px">Готовы вывести центр на новый уровень?</div>
+            <div class="muted">Получите бесплатную консультацию и демо-доступ — настройка под ваши процессы.</div>
+        </div>
+        <div style="display:flex; gap:10px">
+            <a href="#" class="btn" onclick="openWhatsApp('Здравствуйте, хотел(а) запросить демо'); return false;">Запросить демо</a>
+            <a href="#" class="btn-ghost" onclick="openWhatsApp('Здравствуйте, хотел(а) получить консультацию'); return false;">Связаться с нами</a>
+        </div>
+    </section>
+
+    <footer style="padding-top: 100px;">
+        <div>© RehubPro — все права защищены</div>
+        <div class="social-links">
+            <a href="https://instagram.com/rehubpro" target="_blank" class="social-icon" title="Instagram">
+                <svg fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+            </a>
+            <a href="https://wa.me/77718155761" target="_blank" class="social-icon" title="WhatsApp">
+                <svg fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893A11.821 11.821 0 0020.885 3.488"/></svg>
+            </a>
+        </div>
+    </footer>
+
+</div>
 </body>
+
+<script>
+    const carousel = document.getElementById('carousel');
+    let slides = document.querySelectorAll('#carousel .carousel-slide');
+    let currentSlide = 1;
+    let isAnimating = false;
+
+    // 1️⃣ Клонируем первый и последний слайд
+    const firstClone = slides[0].cloneNode(true);
+    const lastClone = slides[slides.length - 1].cloneNode(true);
+
+    firstClone.id = 'first-clone';
+    lastClone.id = 'last-clone';
+
+    carousel.appendChild(firstClone);
+    carousel.insertBefore(lastClone, slides[0]);
+
+    slides = document.querySelectorAll('#carousel .carousel-slide');
+
+    const slideWidth = slides[0].clientWidth;
+    carousel.style.transform = `translateX(${-slideWidth * currentSlide}px)`;
+
+    function goToSlide(index) {
+        if (isAnimating) return;
+        isAnimating = true;
+        carousel.style.transition = 'transform 0.5s ease';
+        carousel.style.transform = `translateX(${-slideWidth * index}px)`;
+        currentSlide = index;
+    }
+
+    function nextSlide() {
+        if (currentSlide >= slides.length - 1) return;
+        goToSlide(currentSlide + 1);
+    }
+
+    function prevSlide() {
+        if (currentSlide <= 0) return;
+        goToSlide(currentSlide - 1);
+    }
+
+    carousel.addEventListener('transitionend', () => {
+        if (slides[currentSlide].id === 'first-clone') {
+            carousel.style.transition = 'none';
+            currentSlide = 1;
+            carousel.style.transform = `translateX(${-slideWidth * currentSlide}px)`;
+        }
+        if (slides[currentSlide].id === 'last-clone') {
+            carousel.style.transition = 'none';
+            currentSlide = slides.length - 2;
+            carousel.style.transform = `translateX(${-slideWidth * currentSlide}px)`;
+        }
+        isAnimating = false;
+    });
+    // Старт
+    document.querySelector('.carousel-arrow.next').onclick = nextSlide;
+    document.querySelector('.carousel-arrow.prev').onclick = prevSlide;
+    function openWhatsApp(message) {
+        // Задаём номер в международном формате без плюса, например для Казахстана:
+        const phoneNumber = "77718155761";
+        // Кодируем текст, чтобы корректно передавались пробелы и символы
+        const encodedMessage = encodeURIComponent(message);
+        // Ссылка для открытия WhatsApp (в браузере или в приложении)
+        const url = `https://wa.me/${phoneNumber}?text=${encodedMessage}`;
+        // Открываем в новой вкладке
+        window.open(url, "_blank");
+    }
+</script>
 </html>
